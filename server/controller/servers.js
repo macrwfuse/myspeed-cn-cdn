@@ -272,6 +272,78 @@ export const CDN_SERVERS = {
         streams: 4,
         downloadTime: 10,
         uploadTime: 10
+    },
+
+    // ── speed.do 节点 ──
+    "speeddo-dl1": {
+        id: "speeddo-dl1",
+        name: "【下载节点1】Ookla 浙江电信",
+        downloadUrl: "https://server-59386.prod.hosts.ooklaserver.net:8080/download?size=25000000",
+        uploadUrl: "https://server-59386.prod.hosts.ooklaserver.net:8080/upload",
+        pingUrl: "https://server-59386.prod.hosts.ooklaserver.net:8080/download?size=0",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "speeddo-dl2": {
+        id: "speeddo-dl2",
+        name: "【下载节点2】Ookla 南京电信",
+        downloadUrl: "https://server-5396.prod.hosts.ooklaserver.net:8080/download?size=25000000",
+        uploadUrl: "https://server-5396.prod.hosts.ooklaserver.net:8080/upload",
+        pingUrl: "https://server-5396.prod.hosts.ooklaserver.net:8080/download?size=0",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "speeddo-cf-us": {
+        id: "speeddo-cf-us",
+        name: "【CloudFlare】美国节点",
+        downloadUrl: "https://speed.cloudflare.com/__down?bytes=25000000",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://speed.cloudflare.com/__down?bytes=0",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "speeddo-telecom-gd": {
+        id: "speeddo-telecom-gd",
+        name: "【电信节点】广东专线节点",
+        downloadUrl: "http://211.136.30.118:9000/speed/10.data",
+        uploadUrl: "http://113.229.96.166:8800/Dat/upServer",
+        pingUrl: "http://211.136.30.118:9000/speed/10.data",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "speeddo-unicom": {
+        id: "speeddo-unicom",
+        name: "【联通节点】全国多线节点",
+        downloadUrl: "https://server-43752.prod.hosts.ooklaserver.net:8080/download?size=25000000",
+        uploadUrl: "https://server-43752.prod.hosts.ooklaserver.net:8080/upload",
+        pingUrl: "https://server-43752.prod.hosts.ooklaserver.net:8080/download?size=0",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "speeddo-mobile": {
+        id: "speeddo-mobile",
+        name: "【移动节点】北京&河北专线节点",
+        downloadUrl: "https://server-16204.prod.hosts.ooklaserver.net:8080/download?size=25000000",
+        uploadUrl: "http://113.229.96.166:8800/Dat/upServer",
+        pingUrl: "https://server-16204.prod.hosts.ooklaserver.net:8080/download?size=0",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "speeddo-edu": {
+        id: "speeddo-edu",
+        name: "【教育网】USTC 多线节点",
+        downloadUrl: "https://test.ustc.edu.cn/backend/garbage.php",
+        uploadUrl: "https://test.ustc.edu.cn/backend/empty.php",
+        pingUrl: "https://test.ustc.edu.cn/backend/empty.php?cors=1",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
     }
 };
 
