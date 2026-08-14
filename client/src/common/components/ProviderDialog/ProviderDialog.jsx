@@ -16,7 +16,8 @@ import SelectableOption, {SelectableList} from "@/common/components/SelectableOp
 export const providers = [
     {id: "ookla", name: "Ookla", image: OoklaImage},
     {id: "libre", name: "LibreSpeed", image: LibreImage},
-    {id: "cloudflare", name: "Cloudflare", image: CloudflareImage}
+    {id: "cloudflare", name: "Cloudflare", image: CloudflareImage},
+    {id: "cdn", name: "CDN", image: CloudflareImage}
 ];
 
 export const ProviderDialog = ({open, onClose}) => {
@@ -27,6 +28,7 @@ export const ProviderDialog = ({open, onClose}) => {
     const [currentInterface, setCurrentInterface] = useState(config.interface || "none");
     const [ooklaServers, setOoklaServers] = useState({});
     const [libreServers, setLibreServers] = useState({});
+    const [cdnServers, setCdnServers] = useState({});
     const [serverId, setServerId] = useState("none");
     const [libreUrl, setLibreUrl] = useState(config.libreUrl || "none");
     const [acceptedOokla, setAcceptedOokla] = useState(config.provider === "ookla");
@@ -35,6 +37,7 @@ export const ProviderDialog = ({open, onClose}) => {
         if (!open) return;
         jsonRequest("/info/server/ookla").then(setOoklaServers);
         jsonRequest("/info/server/libre").then(setLibreServers);
+        jsonRequest("/info/server/cdn").then(setCdnServers);
         jsonRequest("/info/interfaces").then(setInterfaces);
     }, [open]);
 
@@ -142,6 +145,9 @@ export const ProviderDialog = ({open, onClose}) => {
                                             ))}
                                             {provider === "libre" && Object.keys(libreServers).map((current, index) => (
                                                 <option key={index} value={current}>{formatServerLabel(libreServers[current])}</option>
+                                            ))}
+                                            {provider === "cdn" && Object.keys(cdnServers).map((current, index) => (
+                                                <option key={index} value={current}>{cdnServers[current].name || current}</option>
                                             ))}
                                         </select>
                                     </div>

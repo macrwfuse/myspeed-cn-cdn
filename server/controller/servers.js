@@ -170,8 +170,114 @@ export const LIBRE_CN_SERVERS = {
     }
 };
 
+// ── 🌐 CDN 下载测速节点 ──
+// 来源: NetworkPanel / speed.do
+export const CDN_SERVERS = {
+    "cdn-cloudflare-25m": {
+        id: "cdn-cloudflare-25m",
+        name: "Cloudflare · 25MB",
+        downloadUrl: "https://speed.cloudflare.com/__down?bytes=25000000",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://speed.cloudflare.com/__down?bytes=0",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-cloudflare-100m": {
+        id: "cdn-cloudflare-100m",
+        name: "Cloudflare · 100MB",
+        downloadUrl: "https://speed.cloudflare.com/__down?bytes=100000000",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://speed.cloudflare.com/__down?bytes=0",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-cachefly": {
+        id: "cdn-cachefly",
+        name: "CacheFly 全球 CDN",
+        downloadUrl: "https://web1.cachefly.net/speedtest/downloading",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://web1.cachefly.net/speedtest/downloading",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-steam-akamai": {
+        id: "cdn-steam-akamai",
+        name: "Steam Akamai CDN",
+        downloadUrl: "https://cdn.akamai.steamstatic.com/steam/apps/1063730/extras/NW_Sword_Sorcery_2.gif",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://cdn.akamai.steamstatic.com/",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-byte": {
+        id: "cdn-byte",
+        name: "字节 CDN",
+        downloadUrl: "https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://lf3-cdn-tos.bytecdntp.com/",
+        streams: 6,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-qiniu": {
+        id: "cdn-qiniu",
+        name: "七牛 CDN",
+        downloadUrl: "https://devtools.qiniu.com/linux/amd64/qrsctl",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://devtools.qiniu.com/",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-aliyun": {
+        id: "cdn-aliyun",
+        name: "阿里 CDN",
+        downloadUrl: "https://gw.alipayobjects.com/os/volans-demo/93211a67-0eed-40ff-8a48-f6c137a88781/MiniProgramStudio-3.1.3.exe",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://gw.alipayobjects.com/",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-baidu": {
+        id: "cdn-baidu",
+        name: "百度网盘 CDN",
+        downloadUrl: "https://issuepcdn.baidupcs.com/issue/netdisk/LinuxGuanjia/4.17.7/baidunetdisk_4.17.7_amd64.deb",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://issuepcdn.baidupcs.com/",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-wangyi": {
+        id: "cdn-wangyi",
+        name: "网易 CDN",
+        downloadUrl: "https://open-image.ws.126.net/android_phone_release-sp_open-v9.9.9-v0a5b3c1dc0df472bb2fb057d0a5426c3.apk",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://open-image.ws.126.net/",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    },
+    "cdn-microsoft": {
+        id: "cdn-microsoft",
+        name: "Microsoft Akamai CDN",
+        downloadUrl: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RW16Ptm",
+        uploadUrl: "https://speed.cloudflare.com/__up",
+        pingUrl: "https://img-prod-cms-rt-microsoft-com.akamaized.net/",
+        streams: 4,
+        downloadTime: 10,
+        uploadTime: 10
+    }
+};
+
 let ooklaServers;
 let libreServers;
+let cdnServers;
 
 export const getLibreServers = () => {
     if (libreServers) return libreServers;
@@ -205,7 +311,22 @@ export const getOoklaServers = () => {
     return ooklaServers;
 }
 
+export const getCdnServers = () => {
+    if (cdnServers) return cdnServers;
+
+    let servers = {};
+    if (fs.existsSync("./data/servers/cdn.json")) {
+        try {
+            servers = JSON.parse(fs.readFileSync("./data/servers/cdn.json", "utf8"));
+        } catch { }
+    }
+
+    cdnServers = { ...servers, ...CDN_SERVERS };
+    return cdnServers;
+}
+
 export const getByMode = (mode) => {
     if (mode === "ookla") return getOoklaServers();
     if (mode === "libre") return getLibreServers();
+    if (mode === "cdn") return getCdnServers();
 }

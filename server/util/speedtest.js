@@ -3,8 +3,18 @@ import * as interfacesModule from '../util/loadInterfaces.js';
 import * as config from '../controller/config.js';
 import fs from 'node:fs';
 import path from 'node:path';
+import { runCdnSpeedtest } from './providers/cdnSpeedtest.js';
 
 export default async (mode, serverId, serverUrl) => {
+    // CDN 模式不使用外部二进制，直接通过 HTTP 测速
+    if (mode === "cdn") {
+        const { getCdnServers } = await import("../controller/servers.js");
+        const allServers = getCdnServers();
+        const serverEntry = allServers[serverId];
+        if (!serverEntry) throw new Error(`CDN 节点 ${serverId} 不存在`);
+        return await runCdnSpeedtest(serverEntry);
+    }
+
     const binaryPath = mode === "ookla" ? './bin/speedtest' + (process.platform === "win32" ? ".exe" : "")
         : mode === "libre" ? './bin/librespeed-cli' + (process.platform === "win32" ? ".exe" : "")
             : './bin/cfspeedtest' + (process.platform === "win32" ? ".exe" : "");

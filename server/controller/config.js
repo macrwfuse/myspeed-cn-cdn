@@ -21,6 +21,7 @@ const configDefaults = {
     provider: "ookla",
     ooklaId: "none",
     libreId: "none",
+    cdnId: "none",
     libreUrl: "none",
     password: "none",
     passwordLevel: "none",
@@ -105,7 +106,7 @@ export const validateInput = async (key, value) => {
     if (key === "passwordLevel" && !["none", "read"].includes(value))
         return "You need to provide either none or read-access";
 
-    if (key === "provider" && !["ookla", "libre", "cloudflare"].includes(value))
+    if (key === "provider" && !["ookla", "libre", "cloudflare", "cdn"].includes(value))
         return "You need to provide a valid provider";
 
     if (key === "ping")

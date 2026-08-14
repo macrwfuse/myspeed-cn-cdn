@@ -50,6 +50,8 @@ export const run = async (retryAuto = false) => {
 
     // 未指定节点时默认使用上海电信 (3633)
     if (serverId === undefined && mode === "ookla") serverId = "3633";
+    // CDN 模式默认使用 Cloudflare 25MB 节点
+    if (serverId === undefined && mode === "cdn") serverId = "cdn-cloudflare-25m";
     
     if (serverUrl === "none")
         serverUrl = undefined;
@@ -72,6 +74,11 @@ export const run = async (retryAuto = false) => {
             if (serverId === undefined) await config.updateValue("libreId", serverEntry[0]);
             serverId = parseInt(serverEntry[0]);
         }
+    }
+
+    // CDN 模式直接返回 serverId
+    if (mode === "cdn") {
+        speedtest.serverId = serverId;
     }
 
     if (Object.keys(speedtest).length <= 1) throw {message: "No response, even after trying again, test timed out."};
