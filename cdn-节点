@@ -4,7 +4,11 @@ http://115.169.22.22:8080/ 江苏省-南京市
 节点 1 / 节点 2 — 安装包下载测速
 原理： 从各大平台的 APP 安装包下载测速，CDN 带宽大，测速更准确。使用 IDM 等下载工具时需关闭。
 
+
 下载节点列表（dlid1 — 30个）
+"和彩云": "https://img.mcloud.139.com/material_prod/material_media/20221128/1669626861087.png",
+"天翼云桌面": "https://desk.ctyun.cn:8999/desktop-prod/software/windows_tob_client/15/64/202030001/CtyunClouddeskUniversal_2.3.0_202030001_x86_20240327104015_Setup.exe"
+  },
 #	平台	下载链接
 1	抖音	https://lf9-apk.ugapk.cn/package/apk/aweme/5072_340301/aweme_douyin-huidu-gw-aweme-3430_v5072_340301_eea8_1747058635.apk
 2	AcFun	https://cdn.aixifan.com/downloads/AcfunLive-Setup-1.9.0.200-ReleaseX64_6d5c40.exe
