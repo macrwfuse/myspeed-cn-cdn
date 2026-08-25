@@ -17,7 +17,7 @@ export const OOKLA_CN_SERVERS = {
         country: "China",
         cc: "CN",
         distance: 0,
-        host: "115.169.22.130:8080"
+        host: "115.169.22.22:8080"
     },
     "59386": {
         name: "杭州",
