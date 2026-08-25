@@ -216,7 +216,7 @@ export const CDN_SERVERS = {
     "cdn-byte": {
         id: "cdn-byte",
         name: "字节 CDN",
-        downloadUrl: "https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js",
+        downloadUrl: "https://lf3-cdn-tos.bytegoofy.com/obj/douyin-pc-client/7044145585217083655/releases/8293088/1.0.8/win32-ia32/douyin-v1.0.8-win32-ia32-douyin.exe",
         uploadUrl: "https://speed.cloudflare.com/__up",
         pingUrl: "https://lf3-cdn-tos.bytecdntp.com/",
         streams: 6,
