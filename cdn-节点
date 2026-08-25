@@ -1,0 +1,51 @@
+http://115.169.22.22:8080/ 江苏省-南京市
+222.68.195.2:8080  上海市
+
+节点 1 / 节点 2 — 安装包下载测速
+原理： 从各大平台的 APP 安装包下载测速，CDN 带宽大，测速更准确。使用 IDM 等下载工具时需关闭。
+
+下载节点列表（dlid1 — 30个）
+#	平台	下载链接
+1	抖音	https://lf9-apk.ugapk.cn/package/apk/aweme/5072_340301/aweme_douyin-huidu-gw-aweme-3430_v5072_340301_eea8_1747058635.apk
+2	AcFun	https://cdn.aixifan.com/downloads/AcfunLive-Setup-1.9.0.200-ReleaseX64_6d5c40.exe
+3	七牛云	https://devtools.qiniu.com/linux/amd64/qrsctl
+4	七牛云(mac)	https://devtools.qiniu.com/qdoractl-darwin-amd64-0.4.6
+5	微信小程序Studio	https://gw.alipayobjects.com/os/volans-demo/93211a67-0eed-40ff-8a48-f6c137a88781/MiniProgramStudio-3.1.3.exe
+6	百度网盘(Linux)	https://8c8947-1956185621.antpcdn.com:19001/b/pkg-ant.baidu.com/issue/netdisk/LinuxGuanjia/4.17.7/baidunetdisk_4.17.7_amd64.deb
+7	新浪新闻(安卓)	https://downapp.sina.cn/m/06/sinaNews_8.27.0_1719288606_4386_3538_armeabi-v7a.apk
+8	新浪公开课(安卓)	https://i1.sinaimg.cn/edu/sinaopen/SinaOpencourse_V2.02.apk
+9	搜狐新闻(安卓)	https://upgrade.k.sohu.com/upgrade/SohuNews_V7.3.6_0421110326_online_1003.apk
+10	搜狐(安卓)	https://statics.itc.cn/lt-app/sohumobile_official_gray_optimizeRelease_4_1.0.3_01161850.apk
+11	微博(安卓)	https://pkg.sinaimg.cn/weibo_13.11.1_vcode_6489_wm_3333_1001_so_32_64_weibo_5395_205935.apk
+12	网易(安卓)	https://open-image.ws.126.net/android_phone_release-sp_open-v9.9.9-v0a5b3c1dc0df472bb2fb057d0a5426c3.apk
+13	抖音PC	https://lf3-cdn-tos.bytegoofy.com/obj/douyin-pc-client/7044145585217083655/releases/8293088/1.0.8/win32-ia32/douyin-v1.0.8-win32-ia32-douyin.exe
+14	抖音PC(备用)	https://lf6-cdn-tos.bytegoofy.com/obj/douyin-pc-client/7044145585217083655/releases/8293088/1.0.8/win32-ia32/douyin-v1.0.8-win32-ia32-douyin.exe
+15	vivo应用	https://wwwstatic.vivo.com.cn/vivoportal/files/download/app/20231026/350bda07c8a0719919bcadbf5aea3538.apk
+16	拼多多(安卓)	https://cd.pddpic.com/android_dev/2023-11-08/a35eaee8e1f9f018cc40ace12931f7a2.apk
+17	百度网盘Win	https://1270e8-3086970414.antpcdn.com:19001/b/pkg-ant.baidu.com/issue/netdisk/yunguanjia/BaiduNetdisk_7.55.1.101.exe
+18	小红书(安卓)	https://rls.tapimg.com/pub2/202310/64a7c775fa5503fc30f46c6fea6f9faf.apk
+19	UU加速器	https://uu.gdl.netease.com/4112/UU-4.68.1.exe
+20	拼多多(安卓新)	https://cd.pddpic.com/android_dev/2024-06-26/06027b4121edcd1f106d992128a7124b.apk
+21	蘑菇快涨(安卓)	https://cd.pddpic.com/volantis-open/volantis-common/app/com.xunmeng.workBench/Release_1834716.exe
+22	366安全	https://cdn-ws.up366.cn/cn/files/setup/C72C242ED8400001EE2178A912E01146/2022/06/21/4dca83b3e1c461e070f75d2b485e75e7/up366-5.6.6.0.exe
+23	网易(安卓新)	https://open-image.ws.126.net/android_phone_release-sp_open-v9.10.1-vb7b79d6b531448baaca3a81e7fbdc13f.apk
+24	剪映PC	https://lf3-package.vlabstatic.com/obj/faceu-packages/Jianying_split_4_8_0_10791_jianyingpro_0.exe
+25	剪映PC(备用)	https://lf6-package.vlabstatic.com/obj/faceu-packages/Jianying_split_4_8_0_10791_jianyingpro_0.exe
+26	剪映PC(备用2)	https://lf9-package.vlabstatic.com/obj/faceu-packages/Jianying_split_4_8_0_10791_jianyingpro_0.exe
+27	ASAAS	https://file.ljcdn.com/saas-pkg/asaas-new/new_asaas_4.0.56_win_prod.zip
+28	凤凰视频	https://video19.ifeng.com/video09/2022/07/06/p6950362006465552946-102-162611.mp4
+29	京东(安卓)	https://apk.360buyimg.com/build-cms/V5.2.0-4258-800000136-bazaar-64bit.apk
+30	京东金融	https://download.jr.jd.com/downapp/jrapp_jr9631.apk
+上传节点列表（ulid6 — 教育网多线测速）
+#	来源	上传链接
+1	中国科学技术大学	https://test.ustc.edu.cn/backend/empty.php?cors=1
+2	清华大学	https://iptv.tsinghua.edu.cn/st/empty.php?cors=1
+3	上海交通大学	https://ftp.sjtu.edu.cn/speedtest/backend/empty.php?cors=1
+4	南京大学	https://test.nju.edu.cn/backend/empty.php?cors=1
+5	山东(IP)	https://219.140.61.101/backend/empty.php?cors=1
+6	湖北(IP)	https://119.36.86.250:81/backend/empty.php?cors=1
+7	河南(IP)	http://211.67.53.2/backend/empty.php?cors=1
+核心逻辑
+节点 1/2：随机从 dlid1（30个安装包）或 dlid2（5个子集）中选取一个进行下载测速
+Ping 测试：使用 https://lf3-cdn-tos.bytecdntp.com/（字节跳动 CDN）
+测速原理是通过实际下载大型 APP 安装包（几十MB到几百MB）来计算网速
