@@ -235,9 +235,25 @@ async function measureUpload(uploadUrl, streams = STREAMS, durationMs = TEST_DUR
 }
 
 /**
+ * 从数组中随机选取一个元素
+ */
+function pickRandom(arr) {
+    if (!arr || arr.length === 0) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
  * 主入口：执行 CDN 测速
- * @param {object} serverConfig - { name, downloadUrl, uploadUrl, pingUrl, streams?, downloadTime?, uploadTime? }
+ * @param {object} serverConfig - {
+ *   name, downloadUrl, downloadUrls, uploadUrl, uploadUrls, pingUrl,
+ *   streams?, downloadTime?, uploadTime?
+ * }
  * @returns {object} - 与 LibreSpeed 结果格式兼容
+ *
+ * 多URL支持：
+ *   - downloadUrls: 下载链接数组，测速时随机选取一个
+ *   - uploadUrls: 上传链接数组，测速时随机选取一个
+ *   - 向后兼容 downloadUrl / uploadUrl 单链接
  */
 export async function runCdnSpeedtest(serverConfig) {
     const startTime = Date.now();
@@ -245,26 +261,33 @@ export async function runCdnSpeedtest(serverConfig) {
     const {
         name = 'CDN Server',
         downloadUrl,
+        downloadUrls,
         uploadUrl,
+        uploadUrls,
         pingUrl,
         streams: numStreams = STREAMS,
         downloadTime = 10,
         uploadTime = 10,
     } = serverConfig;
 
-    if (!downloadUrl) throw new Error('CDN 测速需要 downloadUrl');
+    // 确定下载URL：优先从 downloadUrls 数组随机选取，否则用 downloadUrl
+    const resolvedDlUrl = pickRandom(downloadUrls) || downloadUrl;
+    if (!resolvedDlUrl) throw new Error('CDN 测速需要 downloadUrl 或 downloadUrls');
+
+    // 确定上传URL：优先从 uploadUrls 数组随机选取，否则用 uploadUrl
+    const resolvedUlUrl = pickRandom(uploadUrls) || uploadUrl;
 
     // 1. Ping
-    const pingTarget = pingUrl || downloadUrl;
+    const pingTarget = pingUrl || resolvedDlUrl;
     const { ping, jitter } = await measurePing(pingTarget);
 
     // 2. Download
-    const dlResult = await measureDownload(downloadUrl, numStreams, downloadTime * 1000);
+    const dlResult = await measureDownload(resolvedDlUrl, numStreams, downloadTime * 1000);
 
     // 3. Upload (如果配置了上传 URL)
     let ulResult = { upload: 0, uploadBytes: 0 };
-    if (uploadUrl) {
-        ulResult = await measureUpload(uploadUrl, numStreams, uploadTime * 1000);
+    if (resolvedUlUrl) {
+        ulResult = await measureUpload(resolvedUlUrl, numStreams, uploadTime * 1000);
     }
 
     const elapsed = Date.now() - startTime;
@@ -276,7 +299,7 @@ export async function runCdnSpeedtest(serverConfig) {
         upload: ulResult.upload,
         server: {
             name: name,
-            url: downloadUrl,
+            url: resolvedDlUrl,
         },
         elapsed: elapsed,
         downloadBytes: dlResult.downloadBytes,

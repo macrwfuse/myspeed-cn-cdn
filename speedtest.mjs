@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * SpeedTest CLI — 纯 Node.js 实现
- * 支持 LibreSpeed / Ookla 节点，默认上海节点
+ * 支持 LibreSpeed / Ookla / CDN 节点
  *
  * 用法:
  *   node speedtest.mjs              # 自动检测运营商，选择上海节点
@@ -9,6 +9,7 @@
  *   node speedtest.mjs -s <id>      # 指定节点
  *   node speedtest.mjs --mode libre # LibreSpeed 模式 (默认)
  *   node speedtest.mjs --mode ookla # Ookla 模式
+ *   node speedtest.mjs --mode cdn   # CDN 下载测速模式
  *   node speedtest.mjs -h           # 帮助
  */
 
@@ -119,6 +120,102 @@ const OOKLA_NODES = {
     name: '宁波电信', id: '59387',
     city: '宁波', isp: 'telecom',
     host: 'cesu-nb.zjtelecom.com.cn:8080',
+  },
+};
+
+// ── 🌐 CDN 下载测速节点 ──
+// 每个节点按 CDN 列表名命名，测速时随机选取下载链接
+const CDN_NODES = {
+  'mcloud': {
+    name: '和彩云 CDN',
+    city: '全国', isp: 'any',
+    downloadUrls: [
+      'https://img.mcloud.139.com/material_prod/material_media/20221128/1669626861087.png'
+    ],
+    uploadUrl: 'https://speed.cloudflare.com/__up',
+    pingUrl: 'http://webcdn.m.qq.com',
+  },
+  'ctyun': {
+    name: '天翼云 CDN',
+    city: '全国', isp: 'any',
+    downloadUrls: [
+      'https://desk.ctyun.cn:8999/desktop-prod/software/windows_tob_client/15/64/202030001/CtyunClouddeskUniversal_2.3.0_202030001_x86_20240327104015_Setup.exe'
+    ],
+    uploadUrl: 'https://speed.cloudflare.com/__up',
+    pingUrl: 'http://webcdn.m.qq.com',
+  },
+  'speedo': {
+    name: 'Speedo云 CDN',
+    city: '全国', isp: 'any',
+    downloadUrls: [
+      'https://lf9-apk.ugapk.cn/package/apk/aweme/5072_340301/aweme_douyin-huidu-gw-aweme-3430_v5072_340301_eea8_1747058635.apk',
+      'https://cdn.aixifan.com/downloads/AcfunLive-Setup-1.9.0.200-ReleaseX64_6d5c40.exe',
+      'https://devtools.qiniu.com/linux/amd64/qrsctl',
+      'https://devtools.qiniu.com/qdoractl-darwin-amd64-0.4.6',
+      'https://gw.alipayobjects.com/os/volans-demo/93211a67-0eed-40ff-8a48-f6c137a88781/MiniProgramStudio-3.1.3.exe',
+      'https://8c8947-1956185621.antpcdn.com:19001/b/pkg-ant.baidu.com/issue/netdisk/LinuxGuanjia/4.17.7/baidunetdisk_4.17.7_amd64.deb',
+      'https://downapp.sina.cn/m/06/sinaNews_8.27.0_1719288606_4386_3538_armeabi-v7a.apk',
+      'https://i1.sinaimg.cn/edu/sinaopen/SinaOpencourse_V2.02.apk',
+      'https://upgrade.k.sohu.com/upgrade/SohuNews_V7.3.6_0421110326_online_1003.apk',
+      'https://statics.itc.cn/lt-app/sohumobile_official_gray_optimizeRelease_4_1.0.3_01161850.apk',
+      'https://pkg.sinaimg.cn/weibo_13.11.1_vcode_6489_wm_3333_1001_so_32_64_weibo_5395_205935.apk',
+      'https://open-image.ws.126.net/android_phone_release-sp_open-v9.9.9-v0a5b3c1dc0df472bb2fb057d0a5426c3.apk',
+      'https://lf3-cdn-tos.bytegoofy.com/obj/douyin-pc-client/7044145585217083655/releases/8293088/1.0.8/win32-ia32/douyin-v1.0.8-win32-ia32-douyin.exe',
+      'https://lf6-cdn-tos.bytegoofy.com/obj/douyin-pc-client/7044145585217083655/releases/8293088/1.0.8/win32-ia32/douyin-v1.0.8-win32-ia32-douyin.exe',
+      'https://wwwstatic.vivo.com.cn/vivoportal/files/download/app/20231026/350bda07c8a0719919bcadbf5aea3538.apk',
+      'https://cd.pddpic.com/android_dev/2023-11-08/a35eaee8e1f9f018cc40ace12931f7a2.apk',
+      'https://1270e8-3086970414.antpcdn.com:19001/b/pkg-ant.baidu.com/issue/netdisk/yunguanjia/BaiduNetdisk_7.55.1.101.exe',
+      'https://rls.tapimg.com/pub2/202310/64a7c775fa5503fc30f46c6fea6f9faf.apk',
+      'https://uu.gdl.netease.com/4112/UU-4.68.1.exe',
+      'https://cd.pddpic.com/android_dev/2024-06-26/06027b4121edcd1f106d992128a7124b.apk',
+      'https://cd.pddpic.com/volantis-open/volantis-common/app/com.xunmeng.workBench/Release_1834716.exe',
+      'https://cdn-ws.up366.cn/cn/files/setup/C72C242ED8400001EE2178A912E01146/2022/06/21/4dca83b3e1c461e070f75d2b485e75e7/up366-5.6.6.0.exe',
+      'https://open-image.ws.126.net/android_phone_release-sp_open-v9.10.1-vb7b79d6b531448baaca3a81e7fbdc13f.apk',
+      'https://lf3-package.vlabstatic.com/obj/faceu-packages/Jianying_split_4_8_0_10791_jianyingpro_0.exe',
+      'https://lf6-package.vlabstatic.com/obj/faceu-packages/Jianying_split_4_8_0_10791_jianyingpro_0.exe',
+      'https://lf9-package.vlabstatic.com/obj/faceu-packages/Jianying_split_4_8_0_10791_jianyingpro_0.exe',
+      'https://file.ljcdn.com/saas-pkg/asaas-new/new_asaas_4.0.56_win_prod.zip',
+      'https://video19.ifeng.com/video09/2022/07/06/p6950362006465552946-102-162611.mp4',
+      'https://apk.360buyimg.com/build-cms/V5.2.0-4258-800000136-bazaar-64bit.apk',
+      'https://download.jr.jd.com/downapp/jrapp_jr9631.apk'
+    ],
+    uploadUrls: [
+      'https://test.ustc.edu.cn/backend/empty.php?cors=1',
+      'https://iptv.tsinghua.edu.cn/st/empty.php?cors=1',
+      'https://ftp.sjtu.edu.cn/speedtest/backend/empty.php?cors=1',
+      'https://test.nju.edu.cn/backend/empty.php?cors=1',
+      'https://219.140.61.101/backend/empty.php?cors=1',
+      'https://119.36.86.250:81/backend/empty.php?cors=1',
+      'http://211.67.53.2/backend/empty.php?cors=1'
+    ],
+    pingUrl: 'http://webcdn.m.qq.com',
+  },
+  'cdn-360': {
+    name: '360云 CDN',
+    city: '全国', isp: 'any',
+    downloadUrls: [
+      'https://cdn.qq.ime.sogou.com/QQPinyin_Setup_6.6.6304.400.exe',
+      'http://softdlc.360tpcdn.com/auto/20201130/2000000064_f07aefc3d918ebdafa9418f3f5ef5f9c.exe',
+      'https://dldir1.qq.com/qqtv/TencentVideo11.99.8523.0.exe',
+      'http://softdlc.360tpcdn.com/auto/20201127/23_21ed487ededbbb428b2a7dcecc969c7c.exe',
+      'https://download.cntv.cn/cbox/v6/ysyy_v6.0.3.3_1001_setup_x64.exe?spm=0.PF8WgFTOZypm.ETms2K8Lsimc.6&file=ysyy_v6.0.3.3_1001_setup_x64.exe',
+      'http://softdlc.360tpcdn.com/auto/20201127/100101123_879baf4f2d9d14f191be2443e16504af.exe',
+      'https://dl.2345.com/pic/2345pic_x64_v11.3.0.10165.exe',
+      'http://bigsoftdlc.360tpcdn.com/auto/20200826/104511_999095167454c21f770b31e8f080ebb7.exe',
+      'http://bigsoftdlc.360tpcdn.com/auto/20210401/103779382_99dafefbd4193095a95fa713348fe6e7.exe',
+      'http://bigsoftdlc.360tpcdn.com/auto/20201125/105005364_74cbde2c220e12dbd49b2c86e0ab2c6f.exe'
+    ],
+    uploadUrl: 'https://speed.cloudflare.com/__up',
+    pingUrl: 'http://webcdn.m.qq.com',
+  },
+  'tencent': {
+    name: '腾讯云 CDN',
+    city: '全国', isp: 'any',
+    downloadUrls: [
+      'http://webcdn.m.qq.com/speed/SpeedTestData.dat'
+    ],
+    uploadUrl: 'http://netsp.master.qq.com/cgi-bin/netspeed',
+    pingUrl: 'http://webcdn.m.qq.com',
   },
 };
 
@@ -509,7 +606,7 @@ async function libreGetIp(node) {
 // ═══════════════════════════════════════════════════
 
 function selectNode(mode, ispInfo, preferredNode) {
-  const nodes = mode === 'ookla' ? OOKLA_NODES : LIBRE_NODES;
+  const nodes = mode === 'ookla' ? OOKLA_NODES : mode === 'cdn' ? CDN_NODES : LIBRE_NODES;
   const entries = Object.entries(nodes);
 
   // 如果指定了节点
@@ -520,6 +617,11 @@ function selectNode(mode, ispInfo, preferredNode) {
     const byName = entries.find(([, n]) => n.name.includes(preferredNode));
     if (byName) return { id: byName[0], ...byName[1] };
     console.log(c('yellow', `⚠ 节点 "${preferredNode}" 未找到，使用自动选择`));
+  }
+
+  // CDN 模式默认选第一个
+  if (mode === 'cdn') {
+    return { id: entries[0][0], ...entries[0][1] };
   }
 
   // 优先选择上海 + 匹配运营商
@@ -551,7 +653,190 @@ function listNodes() {
   for (const [id, node] of Object.entries(OOKLA_NODES)) {
     console.log(`  ${c('cyan', id.padEnd(20))} ${node.name.padEnd(20)} ${node.city.padEnd(6)} ${node.isp}`);
   }
+
+  console.log(c('bold', '\n📡 CDN 下载测速节点:\n'));
+  console.log(c('gray', '  ID'.padEnd(22) + '名称'.padEnd(24) + '下载源数'));
+  console.log(c('gray', '  ' + '─'.repeat(50)));
+  for (const [id, node] of Object.entries(CDN_NODES)) {
+    const count = node.downloadUrls ? node.downloadUrls.length : 1;
+    const upload = node.uploadUrls ? ` | 上传源: ${node.uploadUrls.length}` : '';
+    console.log(`  ${c('cyan', id.padEnd(20))} ${node.name.padEnd(20)} ${count}个${upload}`);
+  }
   console.log();
+}
+
+// ═══════════════════════════════════════════════════
+// CDN 测速函数
+// ═══════════════════════════════════════════════════
+
+function pickRandom(arr) {
+  if (!arr || arr.length === 0) return null;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+async function cdnPing(node, count = CONFIG.pingCount) {
+  const target = node.pingUrl || pickRandom(node.downloadUrls) || node.downloadUrl;
+  const latencies = [];
+  for (let i = 0; i < count; i++) {
+    try {
+      const start = performance.now();
+      await httpGet(target, null, CONFIG.regionTimeout);
+      latencies.push(performance.now() - start);
+    } catch { }
+    await new Promise(r => setTimeout(r, 200));
+  }
+  if (latencies.length === 0) return { latency: 0, jitter: 0 };
+  const latency = Math.min(...latencies);
+  let jitter = 0;
+  if (latencies.length >= 2) {
+    let totalDiff = 0;
+    for (let i = 1; i < latencies.length; i++) totalDiff += Math.abs(latencies[i] - latencies[i - 1]);
+    jitter = totalDiff / (latencies.length - 1);
+  }
+  return {
+    latency: parseFloat(latency.toFixed(2)),
+    jitter: parseFloat(jitter.toFixed(2)),
+  };
+}
+
+async function cdnDownload(node) {
+  const dlUrl = pickRandom(node.downloadUrls) || node.downloadUrl;
+  const controller = { aborted: false };
+  let totalBytes = 0;
+  const startTime = performance.now();
+  let graceDone = false;
+  let graceStartTime = startTime;
+  const speeds = [];
+
+  const streamBytes = new Array(CONFIG.dlStreams).fill(0);
+  const streamPromises = [];
+  for (let i = 0; i < CONFIG.dlStreams; i++) {
+    streamPromises.push((async () => {
+      await new Promise(r => setTimeout(r, i * CONFIG.streamDelay));
+      while (!controller.aborted) {
+        try {
+          await httpGet(dlUrl + (dlUrl.includes('?') ? '&' : '?') + '_nocache=' + Math.random(), (bytes) => {
+            const delta = bytes - streamBytes[i];
+            streamBytes[i] = bytes;
+            totalBytes += delta;
+          });
+        } catch (e) {
+          if (e.message === 'timeout' || e.message === 'aborted') break;
+        }
+      }
+    })());
+  }
+
+  const samplingDone = new Promise((resolve) => {
+    const interval = setInterval(() => {
+      const elapsed = (performance.now() - startTime) / 1000;
+      if (!graceDone) {
+        if (elapsed > CONFIG.dlGraceTime && totalBytes > 0) {
+          graceDone = true;
+          graceStartTime = performance.now();
+          totalBytes = 0;
+        }
+        return;
+      }
+      const measureTime = (performance.now() - graceStartTime) / 1000;
+      if (measureTime < 0.2) return;
+      const bps = totalBytes / measureTime;
+      const mbps = (bps * 8 * CONFIG.overheadFactor) / 1_000_000;
+      speeds.push(mbps);
+      const progress = Math.min(measureTime / CONFIG.dlMaxTime, 1);
+      process.stdout.write(`\r  ${c('cyan', progressBar(progress))} ${c('bold', formatMbps(mbps))} Mbps `);
+      if (measureTime >= CONFIG.dlMaxTime) {
+        clearInterval(interval);
+        controller.aborted = true;
+        resolve();
+      }
+    }, CONFIG.pollInterval);
+    setTimeout(() => {
+      clearInterval(interval);
+      controller.aborted = true;
+      resolve();
+    }, (CONFIG.dlGraceTime + CONFIG.dlMaxTime + 5) * 1000);
+  });
+
+  await samplingDone;
+  await Promise.allSettled(streamPromises);
+
+  const validSpeeds = speeds.slice(Math.floor(speeds.length * 0.2));
+  const download = validSpeeds.length > 0
+    ? parseFloat(Math.max(...validSpeeds).toFixed(2))
+    : 0;
+  process.stdout.write('\n');
+  return { download, elapsed: Math.round((performance.now() - startTime) / 1000) };
+}
+
+async function cdnUpload(node) {
+  const ulUrl = pickRandom(node.uploadUrls) || node.uploadUrl;
+  if (!ulUrl) return { upload: 0, elapsed: 0 };
+
+  const controller = { aborted: false };
+  let totalBytes = 0;
+  const startTime = performance.now();
+  let graceDone = false;
+  let graceStartTime = startTime;
+  const speeds = [];
+
+  const streamBytes = new Array(CONFIG.ulStreams).fill(0);
+  const streamPromises = [];
+  for (let i = 0; i < CONFIG.ulStreams; i++) {
+    streamPromises.push((async () => {
+      await new Promise(r => setTimeout(r, i * CONFIG.streamDelay));
+      while (!controller.aborted) {
+        try {
+          const size = CONFIG.ulBlobSize;
+          await httpPost(ulUrl, size);
+          totalBytes += size;
+        } catch (e) {
+          if (e.message === 'timeout' || e.message === 'aborted') break;
+        }
+      }
+    })());
+  }
+
+  const samplingDone = new Promise((resolve) => {
+    const interval = setInterval(() => {
+      const elapsed = (performance.now() - startTime) / 1000;
+      if (!graceDone) {
+        if (elapsed > CONFIG.ulGraceTime && totalBytes > 0) {
+          graceDone = true;
+          graceStartTime = performance.now();
+          totalBytes = 0;
+        }
+        return;
+      }
+      const measureTime = (performance.now() - graceStartTime) / 1000;
+      if (measureTime < 0.2) return;
+      const bps = totalBytes / measureTime;
+      const mbps = (bps * 8 * CONFIG.overheadFactor) / 1_000_000;
+      speeds.push(mbps);
+      const progress = Math.min(measureTime / CONFIG.ulMaxTime, 1);
+      process.stdout.write(`\r  ${c('cyan', progressBar(progress))} ${c('bold', formatMbps(mbps))} Mbps `);
+      if (measureTime >= CONFIG.ulMaxTime) {
+        clearInterval(interval);
+        controller.aborted = true;
+        resolve();
+      }
+    }, CONFIG.pollInterval);
+    setTimeout(() => {
+      clearInterval(interval);
+      controller.aborted = true;
+      resolve();
+    }, (CONFIG.ulGraceTime + CONFIG.ulMaxTime + 5) * 1000);
+  });
+
+  await samplingDone;
+  await Promise.allSettled(streamPromises);
+
+  const validSpeeds = speeds.slice(Math.floor(speeds.length * 0.2));
+  const upload = validSpeeds.length > 0
+    ? parseFloat(Math.max(...validSpeeds).toFixed(2))
+    : 0;
+  process.stdout.write('\n');
+  return { upload, elapsed: Math.round((performance.now() - startTime) / 1000) };
 }
 
 // ═══════════════════════════════════════════════════
@@ -570,7 +855,11 @@ async function runTest(mode, nodeId) {
   // 2. 选择节点
   const node = selectNode(mode, ispInfo, nodeId);
   console.log(`  ${c('green', '✓')} 节点: ${c('bold', node.name)} (${node.city})`);
-  if (mode === 'libre') {
+  if (mode === 'cdn') {
+    const dlUrl = pickRandom(node.downloadUrls) || node.downloadUrl;
+    console.log(c('dim', `    下载源: ${dlUrl.substring(0, 80)}...`));
+    if (node.downloadUrls) console.log(c('dim', `    共 ${node.downloadUrls.length} 个下载源，随机选取`));
+  } else if (mode === 'libre') {
     console.log(c('dim', `    ${node.server}`));
   } else {
     console.log(c('dim', `    ID: ${node.id} | ${node.host}`));
@@ -583,31 +872,48 @@ async function runTest(mode, nodeId) {
     return;
   }
 
-  // 3. IP 检测
-  console.log('');
-  process.stdout.write(c('dim', '  获取节点 IP 信息...'));
-  const clientIp = await libreGetIp(node);
-  console.log(`\r  ${c('green', '✓')} 节点视角 IP: ${c('bold', clientIp)}`);
+  let pingResult, dlResult, ulResult;
 
-  // 4. Ping 测试
-  console.log('');
-  process.stdout.write(c('dim', '  测试延迟...'));
-  const pingResult = await librePing(node);
-  console.log(`\r  ${c('green', '✓')} 延迟: ${c('bold', pingResult.latency)} ms | 抖动: ${pingResult.jitter} ms`);
+  if (mode === 'cdn') {
+    // CDN 模式测速流程
+    console.log('');
+    process.stdout.write(c('dim', '  测试延迟...'));
+    pingResult = await cdnPing(node);
+    console.log(`\r  ${c('green', '✓')} 延迟: ${c('bold', pingResult.latency)} ms | 抖动: ${pingResult.jitter} ms`);
 
-  // 5. 下载测试
-  console.log('');
-  console.log(c('bold', '  ⬇ 下载测试'));
-  const dlResult = await libreDownload(node);
-  console.log(`  ${c('green', '✓')} 下载: ${c('bold', formatMbps(dlResult.download))} Mbps (${dlResult.elapsed}s)`);
+    console.log('');
+    console.log(c('bold', '  ⬇ 下载测试'));
+    dlResult = await cdnDownload(node);
+    console.log(`  ${c('green', '✓')} 下载: ${c('bold', formatMbps(dlResult.download))} Mbps (${dlResult.elapsed}s)`);
 
-  // 6. 上传测试
-  console.log('');
-  console.log(c('bold', '  ⬆ 上传测试'));
-  const ulResult = await libreUpload(node);
-  console.log(`  ${c('green', '✓')} 上传: ${c('bold', formatMbps(ulResult.upload))} Mbps (${ulResult.elapsed}s)`);
+    console.log('');
+    console.log(c('bold', '  ⬆ 上传测试'));
+    ulResult = await cdnUpload(node);
+    console.log(`  ${c('green', '✓')} 上传: ${c('bold', formatMbps(ulResult.upload))} Mbps (${ulResult.elapsed}s)`);
+  } else {
+    // LibreSpeed 模式测速流程
+    console.log('');
+    process.stdout.write(c('dim', '  获取节点 IP 信息...'));
+    const clientIp = await libreGetIp(node);
+    console.log(`\r  ${c('green', '✓')} 节点视角 IP: ${c('bold', clientIp)}`);
 
-  // 7. 结果汇总
+    console.log('');
+    process.stdout.write(c('dim', '  测试延迟...'));
+    pingResult = await librePing(node);
+    console.log(`\r  ${c('green', '✓')} 延迟: ${c('bold', pingResult.latency)} ms | 抖动: ${pingResult.jitter} ms`);
+
+    console.log('');
+    console.log(c('bold', '  ⬇ 下载测试'));
+    dlResult = await libreDownload(node);
+    console.log(`  ${c('green', '✓')} 下载: ${c('bold', formatMbps(dlResult.download))} Mbps (${dlResult.elapsed}s)`);
+
+    console.log('');
+    console.log(c('bold', '  ⬆ 上传测试'));
+    ulResult = await libreUpload(node);
+    console.log(`  ${c('green', '✓')} 上传: ${c('bold', formatMbps(ulResult.upload))} Mbps (${ulResult.elapsed}s)`);
+  }
+
+  // 结果汇总
   console.log(c('bold', '\n' + '═'.repeat(50)));
   console.log(c('bold', '  📊 测速结果'));
   console.log(c('bold', '═'.repeat(50)));
@@ -642,7 +948,7 @@ ${c('bold', '用法:')}
 
 ${c('bold', '选项:')}
   -s, --server <id>     指定节点 ID
-  -m, --mode <mode>     测速模式: libre (默认) | ookla
+  -m, --mode <mode>     测速模式: libre (默认) | ookla | cdn
   -l, --list            列出所有可用节点
   -c, --chunk <MB>      下载块大小 (默认 100MB)
   --dl-streams <n>      下载并发流 (默认 6)
